@@ -271,18 +271,15 @@ export default async function PostPage({ params }: PageProps) {
 
           <article className="prose prose-gray dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary-600 prose-headings:scroll-mt-20 prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-img:rounded-lg prose-img:shadow-lg">
             <MDXRemote
-              source={post.content}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [
-                    rehypeSlug,
-                    [rehypeAutolinkHeadings, { behavior: 'wrap' }],
-                  ],
-                },
-              }}
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[
+                rehypeSlug,
+                [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+              ]}
               components={mdxComponents}
-            />
+            >
+              {post.content}
+            </MDXRemote>
           </article>
 
           {/* 点赞 */}
