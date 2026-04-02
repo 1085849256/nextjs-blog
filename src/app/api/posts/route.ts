@@ -5,6 +5,9 @@
  *   - 管理员：可通过 status 参数筛选任意状态
  */
 
+// 强制动态渲染（使用 request.url）
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { postListQuerySchema } from '@/lib/validators';

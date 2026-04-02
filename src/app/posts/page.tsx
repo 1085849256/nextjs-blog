@@ -2,6 +2,8 @@
  * 文章列表页
  */
 
+export const dynamic = 'force-dynamic';
+
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';

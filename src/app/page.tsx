@@ -3,6 +3,9 @@
  * 展示置顶文章和最新文章列表
  */
 
+// 强制动态渲染（依赖数据库）
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

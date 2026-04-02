@@ -2,6 +2,8 @@
  * 后台标签管理页面
  */
 
+export const dynamic = 'force-dynamic';
+
 import { prisma } from '@/lib/prisma';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

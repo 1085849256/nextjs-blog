@@ -2,6 +2,8 @@
  * 文章详情页
  */
 
+export const dynamic = 'force-dynamic';
+
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';

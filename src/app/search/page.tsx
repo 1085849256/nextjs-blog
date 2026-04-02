@@ -4,6 +4,7 @@
 
 'use client';
 
+import { Suspense } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,7 @@ import { PostCard } from '@/components/posts/post-card';
 import { Card } from '@/components/ui/card';
 import type { PostListItem } from '@/types';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
 
@@ -134,5 +135,25 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function SearchFallback() {
+  return (
+    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">搜索</h1>
+      <div className="text-center py-12">
+        <div className="inline-block w-8 h-8 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+        <p className="mt-4 text-gray-500">加载搜索...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchFallback />}>
+      <SearchContent />
+    </Suspense>
   );
 }

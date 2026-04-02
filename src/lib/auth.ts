@@ -3,6 +3,11 @@
  * @see https://next-auth.js.org/
  */
 
+// 自动推断 NEXTAUTH_URL（Vercel 构建时 VERCEL_URL 可用）
+if (process.env.VERCEL_URL && !process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`;
+}
+
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';

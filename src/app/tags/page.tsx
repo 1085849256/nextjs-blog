@@ -2,6 +2,8 @@
  * 标签列表页面
  */
 
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { Card } from '@/components/ui/card';
