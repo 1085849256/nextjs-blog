@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 import { prisma } from '@/lib/prisma';
 import { formatDate, calculateReadingTime } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
@@ -188,6 +189,17 @@ export default async function PostPage({ params }: PageProps) {
 
   const readingTime = calculateReadingTime(post.content);
 
+  // 编译 MDX 内容
+  const mdxSource = await serialize(post.content, {
+    mdxOptions: {
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+      ],
+    },
+  });
+
   // 序列化评论
   const serializedComments = post.comments.map((c) => ({
     ...c,
@@ -270,16 +282,7 @@ export default async function PostPage({ params }: PageProps) {
           </div>
 
           <article className="prose prose-gray dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary-600 prose-headings:scroll-mt-20 prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-img:rounded-lg prose-img:shadow-lg">
-            <MDXRemote
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[
-                rehypeSlug,
-                [rehypeAutolinkHeadings, { behavior: 'wrap' }],
-              ]}
-              components={mdxComponents}
-            >
-              {post.content}
-            </MDXRemote>
+            <MDXRemote {...mdxSource} components={mdxComponents} />
           </article>
 
           {/* 点赞 */}
