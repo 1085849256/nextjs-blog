@@ -14,12 +14,10 @@ generator client {
 }
 
 datasource db {
-  // 开发环境使用 SQLite，生产环境切换到 PostgreSQL
-  // 只需修改 provider 和 DATABASE_URL 环境变量即可
+  // 生产部署到 Vercel 时，自动切换为 postgresql
+  // 本地开发保持 sqlite
   provider = "sqlite"
 
-  // SQLite 使用文件路径，PostgreSQL 使用连接字符串
-  // 生产部署到 Vercel 时，建议使用 Vercel Postgres 或 Neon
   url = env("DATABASE_URL")
 }
 
