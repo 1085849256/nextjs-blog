@@ -1,0 +1,11 @@
+/**
+ * NextAuth API 路由处理器
+ * 所有认证请求通过此路由处理
+ */
+
+import NextAuth from 'next-auth';
+import { authOptions } from '@/lib/auth';
+
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };

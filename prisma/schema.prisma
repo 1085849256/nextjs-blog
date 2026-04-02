@@ -1,0 +1,223 @@
+// ===========================================
+// Prisma 数据库模型定义
+// ===========================================
+// 支持 SQLite（开发）和 PostgreSQL（生产）
+// 运行命令：npx prisma db push（创建/更新表结构）
+//           npx prisma generate（生成客户端）
+
+generator client {
+  // 指定生成客户端的输出路径
+  output = "../node_modules/.prisma/client"
+
+  // 指定使用 Prisma Client JS
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // 开发环境使用 SQLite，生产环境切换到 PostgreSQL
+  // 只需修改 provider 和 DATABASE_URL 环境变量即可
+  provider = "sqlite"
+
+  // SQLite 使用文件路径，PostgreSQL 使用连接字符串
+  // 生产部署到 Vercel 时，建议使用 Vercel Postgres 或 Neon
+  url = env("DATABASE_URL")
+}
+
+// ===========================================
+// 用户表
+// ===========================================
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique // 邮箱（唯一索引）
+  name      String   // 显示名称
+  password  String   // 密码（bcrypt 加密存储）
+  role      String   @default("USER") // 用户角色: ADMIN, EDITOR, USER
+  avatar    String?  // 头像 URL
+  bio       String?  // 个人简介
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 关联关系
+  posts    Post[]    // 用户发布的文章
+  comments Comment[] // 用户发表的评论
+  likes    Like[]    // 用户点赞的文章
+
+  @@map("users")
+}
+
+// ===========================================
+// 文章表
+// ===========================================
+model Post {
+  id          String    @id @default(cuid())
+  title       String    // 文章标题
+  slug        String    @unique // URL 友好 slug
+  content     String    // 文章内容（Markdown/MDX）
+  excerpt     String?   // 文章摘要（SEO 使用）
+  coverImage  String?   // 封面图片 URL
+  status      String @default("DRAFT") // 文章状态: PUBLISHED, DRAFT, ARCHIVED
+  isPinned    Boolean   @default(false) // 是否置顶
+  isDeleted   Boolean   @default(false) // 软删除标记
+  viewCount   Int       @default(0) // 阅读量
+  likeCount   Int       @default(0) // 点赞数
+  publishedAt DateTime? // 发布时间
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // 关联关系
+  authorId String // 作者 ID
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  categoryId String? // 分类 ID
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  tags     Tag[]      // 标签（多对多）
+  comments Comment[] // 评论
+  likes    Like[]     // 点赞
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("posts")
+}
+
+// ===========================================
+// 分类表
+// ===========================================
+model Category {
+  id          String   @id @default(cuid())
+  name        String   // 分类名称
+  slug        String   @unique // URL 友好 slug
+  description String?  // 分类描述
+  order       Int      @default(0) // 排序顺序
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联关系
+  posts Post[]
+
+  @@map("categories")
+}
+
+// ===========================================
+// 标签表
+// ===========================================
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   // 标签名称
+  slug      String   @unique // URL 友好 slug
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 关联关系（多对多）
+  posts Post[]
+
+  @@map("tags")
+}
+
+// ===========================================
+// 评论表（支持嵌套回复）
+// ===========================================
+model Comment {
+  id            String   @id @default(cuid())
+  content       String   // 评论内容
+  authorName    String   // 评论者名称
+  authorEmail   String?  // 评论者邮箱（可选）
+  authorWebsite String?  // 评论者网站（可选）
+  authorAvatar  String?  // 评论者头像
+  isApproved    Boolean  @default(false) // 是否审核通过
+  isDeleted     Boolean  @default(false) // 软删除
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // 关联关系
+  postId String // 文章 ID
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String? // 登录用户 ID（可选）
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // 自关联（嵌套回复）
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentId])
+  @@index([isApproved])
+  @@map("comments")
+}
+
+// ===========================================
+// 友链表
+// ===========================================
+model Link {
+  id          String   @id @default(cuid())
+  name        String   // 网站名称
+  url         String   // 网站链接
+  description String?  // 网站描述
+  avatar      String?  // 网站头像/Logo
+  isVisible   Boolean  @default(true) // 是否显示
+  order       Int      @default(0) // 排序顺序
+  isVerified  Boolean  @default(false) // 是否已验证存活
+  lastChecked DateTime? // 上次验证时间
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("links")
+}
+
+// ===========================================
+// 站点配置表
+// ===========================================
+model SiteConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // 配置键
+  value     String   // 配置值
+  type      String @default("STRING") // 配置类型: STRING, NUMBER, BOOLEAN, JSON
+  group     String   @default("general") // 配置分组
+  isPublic  Boolean  @default(true) // 是否公开（前端可读）
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_configs")
+}
+
+// ===========================================
+// 点赞表（防重复点赞）
+// ===========================================
+model Like {
+  id        String   @id @default(cuid())
+  visitorId String   // 访客 ID（基于 IP + User-Agent 生成）
+  ipAddress String?   // IP 地址
+  createdAt DateTime @default(now())
+
+  // 关联关系
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String? // 登录用户 ID（可选）
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, visitorId]) // 同一篇文章同一访客只能点赞一次
+  @@index([postId])
+  @@index([visitorId])
+  @@map("likes")
+}
+
+// ===========================================
+// 订阅表（邮件订阅）
+// ===========================================
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique // 邮箱（唯一）
+  name      String?  // 名称（可选）
+  isActive  Boolean  @default(true) // 是否激活
+  token     String   @unique // 订阅验证 token
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscribers")
+}

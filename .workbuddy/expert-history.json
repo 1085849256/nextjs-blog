@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "sessions": {
+    "3e27ad6b667a4faa9d31c223ee64469d": [
+      {
+        "expertId": "SeniorDeveloper",
+        "name": "Will",
+        "profession": "高级开发工程师",
+        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/02-Engineering/SeniorDeveloper/SeniorDeveloper.png",
+        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/02-Engineering/SeniorDeveloper/SeniorDeveloper_zh.md",
+        "usedAt": 1775132386004,
+        "industryId": "02-Engineering"
+      },
+      {
+        "expertId": "FrontendDeveloper",
+        "name": "Paul",
+        "profession": "前端开发工程师",
+        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/02-Engineering/FrontendDeveloper/FrontendDeveloper.png",
+        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/02-Engineering/FrontendDeveloper/FrontendDeveloper_zh.md",
+        "usedAt": 1775062743429,
+        "industryId": "02-Engineering"
+      },
+      {
+        "expertId": "XiaohongshuOperationsExpert",
+        "name": "Fay",
+        "profession": "小红书运营专家",
+        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/03-Marketing/XiaohongshuOperationsExpert/XiaohongshuOperationsExpert.png",
+        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/03-Marketing/XiaohongshuOperationsExpert/XiaohongshuOperationsExpert_zh.md",
+        "usedAt": 1775060859830,
+        "industryId": "03-Marketing"
+      }
+    ]
+  },
+  "lastUpdated": 1775134580184
+}
