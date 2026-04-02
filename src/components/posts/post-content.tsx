@@ -6,7 +6,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { MDXRemote } from 'next-mdx-remote';
 import { cn, copyToClipboard } from '@/lib/utils';
 import { TableOfContents } from './table-of-contents';
 
@@ -108,7 +108,7 @@ const mdxComponents = {
 };
 
 interface PostContentProps {
-  source: MDXRemoteSerializeResult;
+  source: string;
   className?: string;
   showToc?: boolean;
 }
@@ -204,7 +204,7 @@ export function PostContent({ source, className, showToc = true }: PostContentPr
             className
           )}
         >
-          <MDXRemote {...source} components={mdxComponents} />
+          <MDXRemote source={source} components={mdxComponents} />
         </article>
 
         {/* 目录 */}
