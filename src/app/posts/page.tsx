@@ -125,7 +125,7 @@ export default async function PostsPage({ searchParams }: PageProps) {
                     currentPage={page}
                     totalPages={totalPages}
                     baseUrl="/posts"
-                    params={{ category, tag }}
+                    params={{ category: category || '', tag: tag || '' }}
                   />
                 </div>
               )}

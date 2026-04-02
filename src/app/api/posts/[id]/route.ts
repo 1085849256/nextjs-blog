@@ -23,6 +23,7 @@ export async function GET(
         author: { select: { id: true, name: true, avatar: true } },
         category: { select: { id: true, name: true, slug: true } },
         tags: { select: { id: true, name: true, slug: true } },
+        _count: { select: { comments: true } },
       },
     });
 
@@ -45,7 +46,7 @@ export async function GET(
       status: post.status,
       isPinned: post.isPinned,
       likeCount: post.likeCount,
-      commentCount: post.commentCount,
+      commentCount: post._count.comments,
       viewCount: post.viewCount,
       publishedAt: post.publishedAt?.toISOString(),
       createdAt: post.createdAt.toISOString(),

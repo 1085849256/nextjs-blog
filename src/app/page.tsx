@@ -35,10 +35,11 @@ async function getPinnedPosts(): Promise<PostListItem[]> {
 
   return posts.map((post) => ({
     ...post,
+    status: post.status as PostListItem['status'],
     publishedAt: post.publishedAt?.toISOString(),
     createdAt: post.createdAt.toISOString(),
     updatedAt: post.updatedAt.toISOString(),
-  }));
+  })) as PostListItem[];
 }
 
 // 获取最新文章
@@ -81,10 +82,11 @@ async function getLatestPosts(page: number = 1, pageSize: number = 6): Promise<{
   return {
     posts: posts.map((post) => ({
       ...post,
+      status: post.status as PostListItem['status'],
       publishedAt: post.publishedAt?.toISOString(),
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
-    })),
+    })) as PostListItem[],
     total,
     hasMore: page * pageSize < total,
   };

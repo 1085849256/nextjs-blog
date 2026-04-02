@@ -40,7 +40,7 @@ const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 if (typeof globalThis !== 'undefined') {
   setInterval(() => {
     const now = Date.now();
-    for (const [key, value] of rateLimitStore.entries()) {
+    for (const [key, value] of Array.from(rateLimitStore.entries())) {
       if (now > value.resetAt) {
         rateLimitStore.delete(key);
       }
